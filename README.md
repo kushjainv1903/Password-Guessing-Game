@@ -15,7 +15,22 @@ Guess the hidden word before you run out of attempts — with live position hint
 </div>
 
 
----
+
+<div align="center">
+<table>
+<tr>
+<td width="33%"><img src="Game_Images/Screenshot 2026-10-04 003429.png" alt="Choose the Difficulty" width="100%"/></td>
+<td width="33%"><img src="Game_Images/Screenshot 2026-10-04 003514.png" alt="Guess the Word" width="100%"/></td>
+<td width="33%"><img src="Game_Images/Screenshot 2026-10-04 003539.png" alt="Attemts and Score" width="100%"/></td>
+</tr>
+<tr>
+<td align="center"><sub>Choose the Difficulty</sub></td>
+<td align="center"><sub>Guess the Word</sub></td>
+<td align="center"><sub>Attempts and Score</sub></td>
+</tr>
+</table>
+</div>
+
 
 ## 📋 Overview
 
@@ -129,6 +144,10 @@ Open `frontend/password-game.html` directly in your browser — it connects to t
 | `GET` | `/game/{game_id}/status` | Fetch the current state of a game |
 | `DELETE` | `/game/{game_id}` | Remove a game session from memory |
 | `GET` | `/stats` | List all currently active game sessions |
+<div align="center">
+
+<img src="Game_Images/Screenshot 2026-10-03 194559.png" alt="Fast API dashboard Handling Requests" style= "width:650px; height: auto;">
+</div>
 
 **Start a game**
 ```bash
