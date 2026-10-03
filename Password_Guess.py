@@ -1,22 +1,22 @@
-import random  # noqa
+import random  #noq
 
 
 class PasswordGame:
     """Core password guessing game logic - API-friendly, no input() calls."""
 
-    WORD_BANK = {
+    WORD_BANK = {  # noqa: RUF012
         "easy": ["apple", "banana", "grape", "orange", "peach", "pear"],
         "medium": ["planet", "laptop", "coconut", "python", "bottle", "monkey"],
         "hard": ["computer", "programming", "umbrella", "function", "variable", "mountain"],
     }
 
-    MAX_ATTEMPTS = {
+    MAX_ATTEMPTS = {  # noqa: RUF012
         "easy": 10,
         "medium": 7,
         "hard": 5,
     }
 
-    SCORE_MULTIPLIER = {
+    SCORE_MULTIPLIER = {  # noqa: RUF012
         "easy": 1,
         "medium": 2,
         "hard": 3,
@@ -205,7 +205,7 @@ class PasswordGameCLI:
 
             if result["correct"]:
                 print(f"\n  {'='*45}")
-                print(f"  🎉 Congratulations! You guessed it!")
+                print("  🎉 Congratulations! You guessed it!")
                 print(f"  🔑 Password : {result['password']}")
                 print(f"  🎯 Attempts  : {result['attempts_used']}/{self.game.max_attempts}")
                 print(f"  ⭐ Score     : {result['score']} points")
@@ -214,7 +214,7 @@ class PasswordGameCLI:
 
             if result["is_over"]:
                 print(f"\n  {'='*45}")
-                print(f"  💀 Game Over! You ran out of attempts.")
+                print("  💀 Game Over! You ran out of attempts.")
                 print(f"  🔑 The password was: {result['password']}")
                 print(f"  {'='*45}\n")
                 return
