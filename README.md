@@ -1,238 +1,151 @@
+<div align="center">
+
 # 🔐 Password Guessing Game
 
-A modern, full-stack word-guessing game built with **FastAPI** (backend) and a **React-style frontend** featuring tactile design, real-time hints, and scoring mechanics.
+### A full-stack word-guessing game — FastAPI backend, hand-crafted vanilla-JS frontend
 
-![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.115.0-green.svg)
-![Status](https://img.shields.io/badge/Status-Active-success.svg)
+[![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115.0-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![Pydantic](https://img.shields.io/badge/Pydantic-2.9.2-E92063?style=flat-square&logo=pydantic&logoColor=white)](https://docs.pydantic.dev)
+[![Uvicorn](https://img.shields.io/badge/Uvicorn-ASGI-222222?style=flat-square)](https://www.uvicorn.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](#-license)
 
----
+Guess the hidden word before you run out of attempts — with live position hints, letter-count feedback, and a scoring system that rewards speed and difficulty.
 
-## 🎮 Features
+</div>
 
-### Backend (Python + FastAPI)
-- **Object-Oriented Architecture** — Clean class-based game logic
-- **RESTful API** — Complete game lifecycle endpoints
-- **Three Difficulty Levels** — Easy (10 attempts), Medium (7), Hard (5)
-- **Smart Scoring System** — Based on difficulty multiplier and speed
-- **Enhanced Hints** — Position-based + letter-count feedback
-- **Input Validation** — Case-insensitive, rejects empty/invalid guesses
-- **In-Memory Game Sessions** — UUID-based game tracking
-
-### Frontend (HTML/CSS/JavaScript)
-- **Tactile 3D Tile Design** — Physical keycap effects with shadows
-- **Elegant Typography** — Instrument Serif headings + Plus Jakarta Sans UI
-- **Light/Dark Themes** — Warm off-white (#FBF9F5) / Matte charcoal (#121316)
-- **Emerald/Amber/Slate Feedback** — Color-coded hints
-- **Smooth Micro-Interactions** — Spring animations, shake on errors
-- **Fully Responsive** — Desktop to mobile (480px+)
-- **Real-Time Game State** — Live attempt tracking and hints
 
 ---
 
-## 📁 Project Structure
+## 📋 Overview
+
+This is a **Wordle-style guessing game** split cleanly into a stateless REST API and a single-file web client. The game engine is framework-agnostic Python (it also runs standalone in a terminal), wrapped by a FastAPI layer that exposes the full game lifecycle — start, guess, status, delete — as JSON endpoints. The frontend is pure HTML/CSS/JavaScript with no build step, talking to the API over `fetch`/Axios.
+
+## ✨ Features
+
+**Game Engine**
+- Three difficulty tiers — **Easy** (10 attempts), **Medium** (7), **Hard** (5)
+- Position hints (`_ y t _ o n` style) + correct-letter-count feedback after every guess
+- Score formula that rewards fewer attempts and harder difficulty
+- Input validation — rejects empty guesses and non-alphabetic input
+- Playable two ways: as a **REST API** or directly in the **terminal**
+
+**API**
+- Fully documented via FastAPI's auto-generated **Swagger UI** and **ReDoc**
+- Stateless-per-request design with in-memory, UUID-keyed game sessions
+- CORS enabled out of the box for frontend integration
+
+**Frontend**
+- Single static HTML file — no bundler, no `npm install`
+- Light/dark theme, responsive layout down to small mobile screens
+- Color-coded feedback and small motion touches (shake on invalid guess, etc.)
+
+## 🧠 How It Works
 
 ```
-Password Guessing Game/
-├── Password_Guess.py       # Core game logic + CLI wrapper
-├── main.py                 # FastAPI application
-├── models.py               # Pydantic request/response schemas
-├── requirements.txt        # Python dependencies
+┌──────────────┐  POST /game/start        ┌──────────────────┐
+│  Frontend    │ ──────────────────▶      │ FastAPI Layer   │
+│ (static HTML)│                          │   (main.py)      │
+│              │ ◀──────────────────      │                 │
+└──────────────┘   game_id + rules        └─────────┬────────┘
+                                                    │ delegates to
+                                                    ▼
+                                          ┌───────────────────────┐
+                                          │   PasswordGame class  │
+                                          │   (Password_Guess.py) │
+                                          │  word bank · hints ·  │
+                                          │  scoring · state      │
+                                          └───────────────────────┘
+```
+
+1. The client requests a new game with a chosen difficulty.
+2. `PasswordGame` picks a word from that difficulty's word bank and tracks attempts, state, and score entirely in memory, keyed by a generated `game_id`.
+3. Each guess is validated, scored for correct-position and correct-letter matches, and returned as structured JSON.
+4. On a win, the score is computed from base points, a speed bonus, and the difficulty multiplier.
+
+## 🏗️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| API framework | **FastAPI 0.115.0** |
+| ASGI server | **Uvicorn 0.32.0** |
+| Data validation | **Pydantic 2.9.2** |
+| Core game logic | Pure Python (OOP, dependency-free) |
+| Frontend | HTML5, CSS3, vanilla JavaScript |
+| HTTP client (frontend) | Axios (CDN) |
+| Interactive API docs | Swagger UI / ReDoc (auto-generated by FastAPI) |
+
+## 📂 Project Structure
+
+```
+Password-Guessing-Game/
+├── main.py                   # FastAPI app — routes, CORS, in-memory session store
+├── models.py                 # Pydantic request/response schemas
+├── Password_Guess.py         # PasswordGame engine + standalone CLI wrapper
+├── requirements.txt          # Backend dependencies
 └── frontend/
-    └── password-game.html  # Single-page web application
+    └── password-game.html    # Single-page game client
 ```
 
----
-
-## 🚀 Quick Start
+## ⚙️ Installation & Setup
 
 ### Prerequisites
-- Python 3.9 or higher
-- pip (Python package manager)
-- Modern web browser
+- Python 3.9+
+- pip
+- A modern web browser
 
-### 1. Clone the Repository
+### Steps
+
 ```bash
-git clone https://github.com/YOUR_USERNAME/Password-Guessing-Game.git
+# 1. Clone the repository
+git clone https://github.com/kushjainv1903/Password-Guessing-Game.git
 cd Password-Guessing-Game
-```
 
-### 2. Install Dependencies
-```bash
+# 2. (Recommended) create a virtual environment
+python -m venv venv
+source venv/bin/activate        # Windows: venv\Scripts\activate
+
+# 3. Install dependencies
 pip install -r requirements.txt
-```
 
-### 3. Start the Backend
-```bash
+# 4. Run the API server
 uvicorn main:app --reload
 ```
-The API will run at `http://localhost:8000`
 
-You can explore the auto-generated API docs at:
-- Swagger UI: `http://localhost:8000/docs`
-- ReDoc: `http://localhost:8000/redoc`
+The API is now live at `http://localhost:8000`, with interactive docs at `/docs` (Swagger) and `/redoc` (ReDoc).
 
-### 4. Open the Frontend
-Simply open `frontend/password-game.html` in your browser.
+### Launch the frontend
 
-The game will automatically connect to your running backend.
+Open `frontend/password-game.html` directly in your browser — it connects to the locally running API automatically. No build tools or dev server required.
 
----
 
-## 🎯 How to Play
-
-1. **Select Difficulty** — Choose Easy, Medium, or Hard
-2. **Start Guessing** — Enter your guess and hit Submit
-3. **Use the Hints** — 
-   - 🔡 Position hints show correct letters in the right place
-   - ✅ Letter count shows how many correct letters exist in the word
-4. **Win!** — Guess correctly within the attempt limit to earn points
-
-### Scoring Formula
-```
-Base Points = 100
-Speed Bonus = (Max Attempts - Used Attempts) × 10
-Final Score = (Base + Speed Bonus) × Difficulty Multiplier
-
-Difficulty Multipliers:
-- Easy: 1x
-- Medium: 2x
-- Hard: 3x
-```
-
----
-
-## 🛠️ API Endpoints
+## 🛠️ API Reference
 
 | Method | Endpoint | Description |
-|--------|----------|-------------|
+|---|---|---|
 | `GET` | `/` | Health check |
-| `POST` | `/game/start` | Start a new game (returns `game_id`) |
-| `POST` | `/game/{game_id}/guess` | Submit a guess |
-| `GET` | `/game/{game_id}/status` | Get current game state |
-| `DELETE` | `/game/{game_id}` | Delete a game |
-| `GET` | `/stats` | View active games |
+| `POST` | `/game/start` | Start a new game for a given difficulty, returns `game_id` |
+| `POST` | `/game/{game_id}/guess` | Submit a guess, returns hints / win state / score |
+| `GET` | `/game/{game_id}/status` | Fetch the current state of a game |
+| `DELETE` | `/game/{game_id}` | Remove a game session from memory |
+| `GET` | `/stats` | List all currently active game sessions |
 
-### Example API Usage
-
-**Start a game:**
+**Start a game**
 ```bash
 curl -X POST http://localhost:8000/game/start \
   -H "Content-Type: application/json" \
   -d '{"difficulty": "medium"}'
 ```
 
-**Submit a guess:**
+**Submit a guess**
 ```bash
 curl -X POST http://localhost:8000/game/{game_id}/guess \
   -H "Content-Type: application/json" \
   -d '{"guess": "python"}'
 ```
-
 ---
 
-## 🎨 Design System
-
-### Color Palette
-- **Light Mode Background:** Warm Off-White (#FBF9F5)
-- **Dark Mode Background:** Matte Charcoal (#121316)
-- **Correct Feedback:** Emerald Green (#059669)
-- **Present Feedback:** Amber/Gold (#D97706)
-- **Incorrect Feedback:** Slate (#64748B)
-
-### Typography
-- **Headings:** Instrument Serif (Google Fonts)
-- **UI/Body:** Plus Jakarta Sans (Google Fonts)
-
----
-
-## 🧪 Terminal CLI Version
-
-You can also play the game in your terminal:
-
-```bash
-python Password_Guess.py
-```
-
-This runs the original CLI version with the same game logic.
-
----
-
-## 📦 Dependencies
-
-### Backend
-- **FastAPI** — Modern web framework
-- **Uvicorn** — ASGI server
-- **Pydantic** — Data validation
-
-### Frontend
-- **Axios** — HTTP client (loaded via CDN)
-- Pure HTML/CSS/JavaScript (no build tools required)
-
----
-
-## 🚢 Deployment (Optional)
-
-### Deploy Backend to Render/Railway
-
-**Render:**
-1. Create a new Web Service
-2. Connect your GitHub repo
-3. Set build command: `pip install -r requirements.txt`
-4. Set start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-
-**Railway:**
-1. Create a new project from GitHub
-2. Railway auto-detects Python and runs the app
-
-### Deploy Frontend to GitHub Pages
-
-1. Create a new branch `gh-pages`
-2. Push `frontend/password-game.html` as `index.html`
-3. Enable GitHub Pages in repo settings
-4. Update API endpoint in the HTML to your deployed backend URL
-
----
-
-## 🛡️ Security Note
-
-This project stores game sessions **in-memory** only. For production use with persistent data, consider:
-- Adding Redis for session storage
-- Implementing user authentication
-- Using a proper database (PostgreSQL, MongoDB)
-
----
-
-## 🤝 Contributing
-
-This is a personal learning project, but feedback and suggestions are welcome!
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/improvement`)
-3. Commit your changes (`git commit -m 'Add feature'`)
-4. Push to the branch (`git push origin feature/improvement`)
-5. Open a Pull Request
-
----
-
-## 📝 License
-
-This project is open source and available under the MIT License.
-
----
-
-## 👤 Author
-
-**Kush Jain**
-
-- GitHub: [@YOUR_USERNAME](https://github.com/YOUR_USERNAME)
-- Project built to demonstrate full-stack Python development skills
-
----
-
-## 🎓 Learning Outcomes
-
-This project demonstrates:
+## 🎓 Learning Outcomes This project demonstrates:- 
 - ✅ Object-Oriented Programming in Python
 - ✅ RESTful API design with FastAPI
 - ✅ Frontend-backend integration
@@ -243,10 +156,16 @@ This project demonstrates:
 
 ---
 
-## 📸 Screenshots
+## 🔒 Known Limitations
 
-> Add screenshots of your game here to showcase on your GitHub profile!
+- Game sessions live **in-memory only** — restarting the server clears all active games
+- No authentication or persistence layer — not intended for multi-instance/production deployment as-is
+- For production use, consider adding Redis-backed sessions and a persistent database (PostgreSQL/MongoDB)
 
----
+## 🗺️ Possible Improvements
 
-**Made with ❤️ and Python**
+- Persistent leaderboard across sessions
+- User accounts and guess history
+- WebSocket-based live multiplayer mode
+- Expandable, configurable word banks per difficulty
+  
